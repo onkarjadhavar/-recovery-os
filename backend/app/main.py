@@ -114,13 +114,18 @@ def list_transactions(page: int = 1, limit: int = 25, code: Optional[str] = None
     }
 
 # Fallback routes to serve static frontend dashboard directly
+STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 def _find_static_file(name: str) -> Optional[str]:
     search_dirs = [
+        STATIC_DIR,
+        os.path.join(os.getcwd(), "public"),
+        os.path.join(os.getcwd(), "dist"),
         os.path.join(ROOT_DIR, "public"),
         os.path.join(ROOT_DIR, "dist"),
         os.path.join(ROOT_DIR, "frontend"),
+        os.getcwd(),
         ROOT_DIR
     ]
     for d in search_dirs:
