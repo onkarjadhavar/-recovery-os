@@ -134,12 +134,19 @@ def _find_static_file(name: str) -> Optional[str]:
             return target
     return None
 
+try:
+    from .static_content import INDEX_HTML, STYLE_CSS, APP_JS
+except ImportError:
+    INDEX_HTML = "<h1>RecoveryOS Dashboard</h1>"
+    STYLE_CSS = "/* RecoveryOS Styles */"
+    APP_JS = "// RecoveryOS Client"
+
 @app.get("/")
 def serve_root():
     p = _find_static_file("index.html")
     if p:
         return FileResponse(p, media_type="text/html")
-    return HTMLResponse("<h1>RecoveryOS Backend Ready</h1><p>API docs at <a href='/docs'>/docs</a></p>")
+    return HTMLResponse(INDEX_HTML, media_type="text/html")
 
 @app.get("/index.html")
 def serve_index_html():
@@ -150,12 +157,13 @@ def serve_style_css():
     p = _find_static_file("style.css")
     if p:
         return FileResponse(p, media_type="text/css")
-    raise HTTPException(status_code=404, detail="style.css not found")
+    return HTMLResponse(STYLE_CSS, media_type="text/css")
 
 @app.get("/app.js")
 def serve_app_js():
     p = _find_static_file("app.js")
     if p:
         return FileResponse(p, media_type="application/javascript")
-    raise HTTPException(status_code=404, detail="app.js not found")
+    return HTMLResponse(APP_JS, media_type="application/javascript")
+
 
