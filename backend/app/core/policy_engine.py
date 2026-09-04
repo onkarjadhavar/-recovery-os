@@ -65,8 +65,8 @@ class PolicyEngine:
         ))
         if not risk_passed:
             all_passed = False
-            final_action = RecoveryAction.DO_NOTHING if txn.risk_score > 0.6 else RecoveryAction.ESCALATE_TO_HUMAN
-            enforcement_reason = f"Blocked: Transaction risk ({txn.risk_score:.2f}) breached the safety threshold ({settings.FRAUD_RISK_CUTOFF:.2f})."
+            final_action = RecoveryAction.ESCALATE_TO_HUMAN
+            enforcement_reason = f"Blocked: Transaction risk ({txn.risk_score:.2f}) breached the safety threshold ({settings.FRAUD_RISK_CUTOFF:.2f}). Quarantined for human review."
 
         # Check 3: Retry Budget / Customer Fatigue Cap
         retry_passed = txn.attempt_number <= settings.MAX_RETRY_ATTEMPTS

@@ -41,9 +41,9 @@ def init_data():
             CACHED_TRANSACTIONS = json.load(f)
     print(f"Loaded {len(CACHED_TRANSACTIONS):,} transactions into memory.")
     
-    # Precompute benchmark on sample or full set
-    print("Computing initial benchmark metrics against Naive Baseline...")
-    CACHED_BENCHMARK = BenchmarkEvaluator.run_benchmark(CACHED_TRANSACTIONS[:5000])
+    # Precompute benchmark on held-out test split (last 5,000 of 20,000 records)
+    print("Computing initial benchmark metrics on 5,000 held-out test records against Naive Baseline...")
+    CACHED_BENCHMARK = BenchmarkEvaluator.run_benchmark(CACHED_TRANSACTIONS[-5000:])
     print(f"Benchmark ready: {CACHED_BENCHMARK.recoveryos_recovery_rate}% Recovery Rate vs {CACHED_BENCHMARK.baseline_recovery_rate}% Baseline.")
 
 class RecoveryOSHandler(BaseHTTPRequestHandler):
@@ -83,7 +83,7 @@ class RecoveryOSHandler(BaseHTTPRequestHandler):
             global CACHED_BENCHMARK
             self._set_headers(200)
             if not CACHED_BENCHMARK:
-                CACHED_BENCHMARK = BenchmarkEvaluator.run_benchmark(CACHED_TRANSACTIONS[:5000])
+                CACHED_BENCHMARK = BenchmarkEvaluator.run_benchmark(CACHED_TRANSACTIONS[-5000:])
             self.wfile.write(CACHED_BENCHMARK.model_dump_json().encode("utf-8"))
 
         elif path == "/api/transactions":

@@ -90,8 +90,14 @@ def simulate_preset_scenario(payload: Dict[str, str]):
 @app.get("/api/benchmarks", response_model=BatchBenchmarkResult)
 def get_benchmarks(sample_size: int = 5000):
     txns = get_cached_transactions()
-    sample = txns[:sample_size] if txns else []
+    # Use the 5,000 held-out test transactions split
+    sample = txns[-sample_size:] if txns else []
     return BenchmarkEvaluator.run_benchmark(sample)
+
+@app.post("/api/run-full-benchmark", response_model=BatchBenchmarkResult)
+def run_full_benchmark():
+    txns = get_cached_transactions()
+    return BenchmarkEvaluator.run_benchmark(txns)
 
 @app.post("/api/razorpay-webhook", response_model=DecisionTrace)
 def handle_razorpay_webhook(

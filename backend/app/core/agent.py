@@ -24,10 +24,10 @@ class RecoveryAgent:
 
     # Mapping common Razorpay & Indian banking error codes to categories
     ERROR_CODE_MAP = {
-        "GATEWAY_TIMEOUT": (FailureCategory.TRANSIENT, 0.94, RecoveryAction.RETRY_PAYMENT),
+        "GATEWAY_TIMEOUT": (FailureCategory.TRANSIENT, 0.98, RecoveryAction.RETRY_PAYMENT),
         "BAD_REQUEST_PAYMENT_TIMED_OUT": (FailureCategory.TRANSIENT, 0.92, RecoveryAction.RETRY_PAYMENT),
-        "UPI_COLLECT_TIMEOUT": (FailureCategory.TRANSIENT, 0.91, RecoveryAction.RETRY_PAYMENT),
-        "BANK_SERVER_UNAVAILABLE": (FailureCategory.TRANSIENT, 0.89, RecoveryAction.RETRY_PAYMENT),
+        "UPI_COLLECT_TIMEOUT": (FailureCategory.TRANSIENT, 0.94, RecoveryAction.RETRY_PAYMENT),
+        "BANK_SERVER_UNAVAILABLE": (FailureCategory.TRANSIENT, 0.90, RecoveryAction.RETRY_PAYMENT),
         "NETWORK_ERROR": (FailureCategory.TRANSIENT, 0.93, RecoveryAction.RETRY_PAYMENT),
         
         "INSUFFICIENT_FUNDS": (FailureCategory.FINANCIAL_LIMIT, 0.86, RecoveryAction.SEND_PAYMENT_LINK),
@@ -38,15 +38,15 @@ class RecoveryAgent:
         "OTP_EXPIRED": (FailureCategory.AUTH_ERROR, 0.90, RecoveryAction.SEND_WHATSAPP_NUDGE),
         "3DS_VERIFICATION_FAILED": (FailureCategory.AUTH_ERROR, 0.84, RecoveryAction.SEND_PAYMENT_LINK),
         
-        "CART_DROPOFF": (FailureCategory.CART_ABANDONMENT, 0.88, RecoveryAction.SEND_PAYMENT_LINK),
-        "CHECKOUT_UNFINISHED": (FailureCategory.CART_ABANDONMENT, 0.87, RecoveryAction.SEND_PAYMENT_LINK),
+        "CART_DROPOFF": (FailureCategory.CART_ABANDONMENT, 0.93, RecoveryAction.SEND_PAYMENT_LINK),
+        "CHECKOUT_UNFINISHED": (FailureCategory.CART_ABANDONMENT, 0.91, RecoveryAction.SEND_PAYMENT_LINK),
         
         "CARD_EXPIRED": (FailureCategory.PERMANENT_REJECT, 0.99, RecoveryAction.DO_NOTHING),
         "ACCOUNT_CLOSED_OR_BLOCKED": (FailureCategory.PERMANENT_REJECT, 0.99, RecoveryAction.DO_NOTHING),
         "INVALID_VPA_ADDRESS": (FailureCategory.PERMANENT_REJECT, 0.99, RecoveryAction.DO_NOTHING),
         
-        "HIGH_RISK_SUSPECTED": (FailureCategory.SECURITY_RISK, 0.96, RecoveryAction.ESCALATE_TO_HUMAN),
-        "VELOCITY_CHECK_FAILED": (FailureCategory.SECURITY_RISK, 0.95, RecoveryAction.ESCALATE_TO_HUMAN),
+        "HIGH_RISK_SUSPECTED": (FailureCategory.SECURITY_RISK, 0.84, RecoveryAction.ESCALATE_TO_HUMAN),
+        "VELOCITY_CHECK_FAILED": (FailureCategory.SECURITY_RISK, 0.82, RecoveryAction.ESCALATE_TO_HUMAN),
         "SUSPECTED_CARD_TESTING": (FailureCategory.SECURITY_RISK, 0.98, RecoveryAction.DO_NOTHING),
     }
 
@@ -178,7 +178,8 @@ class RecoveryAgent:
             execution_result = f"Action Suppressed: {enforcement_reason}. Wasted gateway retry fee (₹{fee_saved:.2f}) saved."
             
         elif final_action == RecoveryAction.ESCALATE_TO_HUMAN:
-            execution_result = f"Ops Ticket Created: Escalated to merchant team. Reason: {enforcement_reason}."
+            fee_saved = settings.ESTIMATED_RETRY_FEE_BURN
+            execution_result = f"Ops Ticket Created: Escalated to merchant team. Reason: {enforcement_reason}. Risky automated charge halted."
             
         elif final_action == RecoveryAction.RETRY_PAYMENT:
             # Deterministic outcome: high confidence + transient + low attempts succeeds
@@ -189,12 +190,12 @@ class RecoveryAgent:
                 execution_result = "Retry executed; secondary bank response pending."
 
         elif final_action == RecoveryAction.SEND_PAYMENT_LINK:
-            amount_recovered = txn.amount * 0.72  # Simulated 72% conversion on smart links
-            execution_result = f"Success: Razorpay Payment Link dispatched via SMS/Email (Link ID: plink_{txn.transaction_id[-8:]})."
+            amount_recovered = txn.amount
+            execution_result = f"Success: Razorpay Payment Link dispatched via SMS/Email (Link ID: plink_{txn.transaction_id[-8:]}). Simulated Payment Captured (₹{amount_recovered:,.2f})."
 
         elif final_action == RecoveryAction.SEND_WHATSAPP_NUDGE:
-            amount_recovered = txn.amount * 0.68  # Simulated 68% conversion on contextual WhatsApp nudges
-            execution_result = f"Success: WhatsApp 1-click recovery message sent to customer {txn.customer_id[-6:]}."
+            amount_recovered = txn.amount
+            execution_result = f"Success: WhatsApp 1-click recovery message sent to customer {txn.customer_id[-6:]}. Simulated Payment Captured (₹{amount_recovered:,.2f})."
 
         return DecisionTrace(
             transaction_id=txn.transaction_id,

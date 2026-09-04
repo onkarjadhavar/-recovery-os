@@ -9,6 +9,12 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 BACKEND_DIR = os.path.dirname(CURRENT_DIR)
 sys.path.insert(0, BACKEND_DIR)
 
+if hasattr(sys.stdout, 'reconfigure'):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
+
 from app.models.schemas import TransactionEvent, RecoveryAction, FailureCategory
 from app.core.policy_engine import PolicyEngine
 from app.core.agent import RecoveryAgent
@@ -138,6 +144,24 @@ def test_retry_budget_exhaustion():
     assert retry_check.passed is False
     print("[PASS] test_retry_budget_exhaustion")
 
+import unittest
+
+class TestPolicyGuardrails(unittest.TestCase):
+    def test_01_transient_happy_path(self):
+        test_transient_happy_path()
+
+    def test_02_high_amount_escalation_guardrail(self):
+        test_high_amount_escalation_guardrail()
+
+    def test_03_fraud_risk_boundary_guardrail(self):
+        test_fraud_risk_boundary_guardrail()
+
+    def test_04_permanent_failure_stop_rule(self):
+        test_permanent_failure_stop_rule()
+
+    def test_05_retry_budget_exhaustion(self):
+        test_retry_budget_exhaustion()
+
 if __name__ == "__main__":
     print("Running RecoveryOS Guardrail Tests...")
     test_transient_happy_path()
@@ -146,3 +170,4 @@ if __name__ == "__main__":
     test_permanent_failure_stop_rule()
     test_retry_budget_exhaustion()
     print("\nALL POLICY GUARDRAIL TESTS PASSED SUCCESSFULLY! (5/5)")
+

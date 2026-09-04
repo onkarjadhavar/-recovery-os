@@ -15,7 +15,7 @@ const FALLBACK_SCENARIOS = {
     failure_code: "GATEWAY_TIMEOUT",
     failure_category: "TRANSIENT",
     diagnosis_explanation: "Transient inter-bank latency / switch timeout on UPI. Verified customer with 7 prior successful payments (CLV: ₹15,400). Failure is non-behavioral; auto-retry scheduled with jitter.",
-    ai_confidence: 0.94,
+    ai_confidence: 0.98,
     recommended_action: "RETRY_PAYMENT",
     policy_approved: true,
     policy_checks: [
@@ -23,10 +23,10 @@ const FALLBACK_SCENARIOS = {
       { rule_name: "FRAUD_RISK_BOUNDARY", passed: true, threshold_applied: "Risk Score < 0.35", observed_value: "Risk: 0.03", details: "Clean history" },
       { rule_name: "MAX_RETRY_BUDGET", passed: true, threshold_applied: "Attempts <= 2", observed_value: "Attempt #1", details: "Budget available" },
       { rule_name: "AUTO_RECOVERY_AMOUNT_CAP", passed: true, threshold_applied: "Amount <= ₹5,000", observed_value: "₹1,499.00", details: "Within autonomous boundary" },
-      { rule_name: "AI_CONFIDENCE_GATE", passed: true, threshold_applied: "Confidence >= 85%", observed_value: "94.0%", details: "High diagnostic confidence" }
+      { rule_name: "AI_CONFIDENCE_GATE", passed: true, threshold_applied: "Confidence >= 85%", observed_value: "98.0%", details: "High diagnostic confidence" }
     ],
     final_action: "RETRY_PAYMENT",
-    execution_result: "Success: Razorpay Smart Retry executed at optimal jitter. Payment captured (₹1,499.00).",
+    execution_result: "Success: Razorpay Smart Retry executed at optimal jitter. Simulated Payment Captured (₹1,499.00).",
     amount_recovered: 1499.0,
     gateway_fee_saved: 0.0
   },
@@ -40,7 +40,7 @@ const FALLBACK_SCENARIOS = {
     failure_code: "HIGH_RISK_SUSPECTED",
     failure_category: "SECURITY_RISK",
     diagnosis_explanation: "High-risk anomaly: risk score 0.78 breaches platform baseline. 0 prior successful transactions, multiple rapid declines. Automated intervention prohibited.",
-    ai_confidence: 0.96,
+    ai_confidence: 0.84,
     recommended_action: "ESCALATE_TO_HUMAN",
     policy_approved: false,
     policy_checks: [
@@ -48,12 +48,12 @@ const FALLBACK_SCENARIOS = {
       { rule_name: "FRAUD_RISK_BOUNDARY", passed: false, threshold_applied: "Risk Score < 0.35", observed_value: "Risk: 0.78", details: "Flagged: Risk score breached ceiling" },
       { rule_name: "MAX_RETRY_BUDGET", passed: true, threshold_applied: "Attempts <= 2", observed_value: "Attempt #2", details: "Under attempt cap" },
       { rule_name: "AUTO_RECOVERY_AMOUNT_CAP", passed: false, threshold_applied: "Amount <= ₹5,000", observed_value: "₹42,000.00", details: "Escalated: Value exceeds autonomous limit" },
-      { rule_name: "AI_CONFIDENCE_GATE", passed: true, threshold_applied: "Confidence >= 85%", observed_value: "96.0%", details: "High confidence" }
+      { rule_name: "AI_CONFIDENCE_GATE", passed: false, threshold_applied: "Confidence >= 85%", observed_value: "84.0%", details: "Below confidence threshold" }
     ],
     final_action: "ESCALATE_TO_HUMAN",
-    execution_result: "Ops Ticket Created: Escalated to merchant team. Reason: Blocked: High value (₹42,000.00) & risk score (0.78).",
+    execution_result: "Action Blocked: High value (₹42,000.00), risk (0.78) & low AI confidence (84%). Quarantined for Human Review.",
     amount_recovered: 0.0,
-    gateway_fee_saved: 0.0
+    gateway_fee_saved: 3.50
   },
   permanent_failure: {
     transaction_id: "pay_X441pL88qWW77k",
@@ -76,7 +76,7 @@ const FALLBACK_SCENARIOS = {
       { rule_name: "AI_CONFIDENCE_GATE", passed: true, threshold_applied: "Confidence >= 85%", observed_value: "99.0%", details: "Deterministic error" }
     ],
     final_action: "DO_NOTHING",
-    execution_result: "Action Suppressed: Permanent failure detected. Wasted gateway retry fee (₹3.50) saved.",
+    execution_result: "Action Suppressed: Permanent failure (CARD_EXPIRED). Wasted gateway retry fee (₹3.50) avoided.",
     amount_recovered: 0.0,
     gateway_fee_saved: 3.50
   },
@@ -90,7 +90,7 @@ const FALLBACK_SCENARIOS = {
     failure_code: "CART_DROPOFF",
     failure_category: "CART_ABANDONMENT",
     diagnosis_explanation: "Checkout funnel drop before gateway transition. Intent is warm. Generating time-bounded Razorpay Smart Checkout link with 15-minute lock.",
-    ai_confidence: 0.88,
+    ai_confidence: 0.93,
     recommended_action: "SEND_PAYMENT_LINK",
     policy_approved: true,
     policy_checks: [
@@ -98,11 +98,11 @@ const FALLBACK_SCENARIOS = {
       { rule_name: "FRAUD_RISK_BOUNDARY", passed: true, threshold_applied: "Risk Score < 0.35", observed_value: "Risk: 0.05", details: "Low risk" },
       { rule_name: "MAX_RETRY_BUDGET", passed: true, threshold_applied: "Attempts <= 2", observed_value: "Attempt #1", details: "First attempt" },
       { rule_name: "AUTO_RECOVERY_AMOUNT_CAP", passed: true, threshold_applied: "Amount <= ₹5,000", observed_value: "₹3,250.00", details: "Within autonomous boundary" },
-      { rule_name: "AI_CONFIDENCE_GATE", passed: true, threshold_applied: "Confidence >= 85%", observed_value: "88.0%", details: "Confidence threshold met" }
+      { rule_name: "AI_CONFIDENCE_GATE", passed: true, threshold_applied: "Confidence >= 85%", observed_value: "93.0%", details: "Confidence threshold met" }
     ],
     final_action: "SEND_PAYMENT_LINK",
-    execution_result: "Success: Razorpay Payment Link dispatched via SMS/Email (Link ID: plink_7jHH99b).",
-    amount_recovered: 2340.0,
+    execution_result: "Success: Razorpay Payment Link dispatched via SMS/Email (Link ID: plink_7jHH99b). Simulated Payment Captured (₹3,250.00).",
+    amount_recovered: 3250.0,
     gateway_fee_saved: 0.0
   }
 };
@@ -127,6 +127,14 @@ const traceModal = document.getElementById("traceModal");
 const modalTxnId = document.getElementById("modalTxnId");
 const modalTraceContent = document.getElementById("modalTraceContent");
 const closeModalBtn = document.getElementById("closeModalBtn");
+
+const benchmarkExplainerModal = document.getElementById("benchmarkExplainerModal");
+const openBenchmarkExplainerBtn = document.getElementById("openBenchmarkExplainerBtn");
+const closeBenchmarkModalBtn = document.getElementById("closeBenchmarkModalBtn");
+
+const docsModal = document.getElementById("docsModal");
+const openDocsModalBtn = document.getElementById("openDocsModalBtn");
+const closeDocsModalBtn = document.getElementById("closeDocsModalBtn");
 
 let currentScenario = "transient_upi";
 
@@ -157,13 +165,53 @@ function setupEventListeners() {
   // Run Full Benchmark Button
   runFullBenchmarkBtn.addEventListener("click", () => runFullBenchmark());
 
-  // Modal Close
+  // Trace Modal Close
   closeModalBtn.addEventListener("click", () => {
     traceModal.classList.remove("open");
   });
 
+  // Benchmark Explainer Modal
+  if (openBenchmarkExplainerBtn) {
+    openBenchmarkExplainerBtn.addEventListener("click", () => {
+      benchmarkExplainerModal.classList.add("open");
+    });
+  }
+  if (closeBenchmarkModalBtn) {
+    closeBenchmarkModalBtn.addEventListener("click", () => {
+      benchmarkExplainerModal.classList.remove("open");
+    });
+  }
+
+  // Docs Modal
+  if (openDocsModalBtn) {
+    openDocsModalBtn.addEventListener("click", (e) => {
+      e.preventDefault();
+      docsModal.classList.add("open");
+    });
+  }
+  if (closeDocsModalBtn) {
+    closeDocsModalBtn.addEventListener("click", () => {
+      docsModal.classList.remove("open");
+    });
+  }
+
   window.addEventListener("keydown", e => {
-    if (e.key === "Escape") traceModal.classList.remove("open");
+    if (e.key === "Escape") {
+      traceModal.classList.remove("open");
+      if (benchmarkExplainerModal) benchmarkExplainerModal.classList.remove("open");
+      if (docsModal) docsModal.classList.remove("open");
+    }
+  });
+
+  // Close modals when clicking outside card
+  [traceModal, benchmarkExplainerModal, docsModal].forEach(modal => {
+    if (modal) {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.remove("open");
+        }
+      });
+    }
   });
 }
 
@@ -196,32 +244,63 @@ function renderTrace(trace) {
 
   const isApproved = trace.policy_approved;
   const isRecovered = trace.amount_recovered > 0;
-  const isBlocked = trace.final_action === "ESCALATE_TO_HUMAN" || (!isApproved && trace.amount_recovered === 0);
+  const isBlocked = trace.final_action === "ESCALATE_TO_HUMAN" || (!isApproved && trace.final_action !== "DO_NOTHING");
   const isHalted = trace.final_action === "DO_NOTHING";
 
   let bannerClass = "success";
-  let bannerTitle = `&#10003; RECOVERY SUCCESSFUL &bull; &#8377;${trace.amount_recovered.toLocaleString('en-IN')}`;
+  let bannerTitle = `&#10003; RECOVERY ACTION EXECUTED &amp; VERIFIED (SIMULATED) &bull; &#8377;${trace.amount_recovered.toLocaleString('en-IN')}`;
   let bannerSub = trace.execution_result;
 
   if (isBlocked) {
     bannerClass = "blocked";
-    bannerTitle = `&#128737;&#65039; ACTION BLOCKED BY POLICY GUARDRAIL`;
-    bannerSub = trace.execution_result;
+    bannerTitle = `&#128737;&#65039; BLOCKED BY POLICY GUARDRAIL &bull; HUMAN REVIEW REQUIRED`;
+    bannerSub = "Automated execution blocked BEFORE money movement. Quarantined for supervisor review.";
   } else if (isHalted) {
     bannerClass = "halted";
-    bannerTitle = `&#128721; ACTION INTENTIONALLY HALTED (Fee Saved)`;
-    bannerSub = trace.execution_result;
+    bannerTitle = `&#128721; HALTED &bull; PERMANENT FAILURE STOP RULE (FEE SAVED)`;
+    bannerSub = "Zero payment attempts made. Futile gateway retry fee avoided.";
   }
 
   const confidencePct = Math.round((trace.ai_confidence || 0.9) * 100);
 
+  // Generate "Why Not" explanation card if blocked or halted
+  let explanationBoxHtml = "";
+  if (isBlocked) {
+    explanationBoxHtml = `
+      <div class="why-not-card">
+        <div class="why-not-title">&#9888;&#65039; WHY WAS THIS PAYMENT NOT AUTO-RECOVERED?</div>
+        <ul class="why-not-list">
+          ${trace.amount > 5000 ? `<li><strong>Amount Limit Breached:</strong> Amount &#8377;${trace.amount.toLocaleString('en-IN')} exceeds autonomous limit (&#8377;5,000.00).</li>` : ''}
+          ${trace.policy_checks.some(c => c.rule_name === 'FRAUD_RISK_BOUNDARY' && !c.passed) ? `<li><strong>Risk Safety Ceiling Breached:</strong> Transaction risk score exceeds platform safety boundary (&lt; 0.35).</li>` : ''}
+          ${trace.ai_confidence < 0.85 ? `<li><strong>Confidence Gate Breached:</strong> AI diagnostic confidence (${confidencePct}%) is below minimum 85% safety gate.</li>` : ''}
+          <li><strong>Deterministic Safety:</strong> High-risk exposures strictly require human supervisor sign-off before initiating money movement.</li>
+        </ul>
+        <div class="why-not-verdict">FINAL DECISION: AUTOMATED ACTION BLOCKED &mdash; QUARANTINED FOR HUMAN REVIEW</div>
+      </div>
+    `;
+  } else if (isHalted) {
+    explanationBoxHtml = `
+      <div class="why-not-card halted-card">
+        <div class="why-not-title">&#128721; AI &amp; POLICY STOPPING RULE EXPLANATION:</div>
+        <div class="stopping-rule-grid">
+          <div><span class="sr-label">AI DECISION:</span> <code>DO_NOTHING</code> (Permanent instrument rejection)</div>
+          <div><span class="sr-label">POLICY RESULT:</span> <strong style="color: var(--amber-600);">NO AUTOMATED RECOVERY ALLOWED</strong></div>
+          <div><span class="sr-label">FINAL OUTCOME:</span> <strong style="color: var(--cyan-600);">HALTED &mdash; PERMANENT FAILURE (Saved &#8377;3.50 Fee)</strong></div>
+        </div>
+        <div style="font-size: 0.76rem; color: var(--text-dim); margin-top: 0.45rem;">
+          Permanent rejections (e.g. CARD_EXPIRED, INVALID_VPA) can never succeed upon re-authorization. Indiscriminate retries cause merchant card network fines and burn gateway fees. RecoveryOS halts immediately.
+        </div>
+      </div>
+    `;
+  }
+
   const html = `
     <div class="trace-flow">
-      <!-- Step 1: Perception -->
+      <!-- Step 1: Event Ingestion -->
       <div class="trace-step">
         <div class="step-num">1</div>
         <div class="step-body">
-          <div class="step-title">Perception &amp; Razorpay Event Ingestion</div>
+          <div class="step-title">Stage 1 &bull; Event Ingestion &amp; Perception</div>
           <div class="step-box">
             <div><strong>${trace.detection_event}</strong> &bull; Amount: <strong>&#8377;${trace.amount.toLocaleString('en-IN')}</strong></div>
             <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.2rem;">
@@ -231,15 +310,15 @@ function renderTrace(trace) {
         </div>
       </div>
 
-      <!-- Step 2: AI Diagnosis -->
+      <!-- Step 2: Semantic AI Diagnosis -->
       <div class="trace-step">
         <div class="step-num">2</div>
         <div class="step-body">
-          <div class="step-title">Semantic AI Diagnosis &amp; Recoverability</div>
+          <div class="step-title">Stage 2 &bull; Semantic AI Diagnosis &amp; Recoverability</div>
           <div class="step-box">
             <div class="step-narrative">&ldquo;${trace.diagnosis_explanation}&rdquo;</div>
             <div class="confidence-meter">
-              <span style="font-size: 0.72rem; color: var(--text-muted);">Confidence:</span>
+              <span style="font-size: 0.72rem; color: var(--text-muted);">Diagnostic Confidence:</span>
               <div class="meter-bar">
                 <div class="meter-fill" style="width: ${confidencePct}%;"></div>
               </div>
@@ -249,14 +328,14 @@ function renderTrace(trace) {
         </div>
       </div>
 
-      <!-- Step 3: Policy Guardrail Engine -->
+      <!-- Step 3: Deterministic Policy Guardrail Engine -->
       <div class="trace-step">
         <div class="step-num">3</div>
         <div class="step-body">
-          <div class="step-title">Deterministic Policy Guardrail Evaluation</div>
+          <div class="step-title">Stage 3 &bull; Deterministic Policy Guardrail Evaluation</div>
           <div class="step-box">
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.35rem;">
-              Recommended Candidate Action: <code style="color: var(--razorpay-accent);">${trace.recommended_action}</code>
+              AI Recommended Action: <code style="color: var(--razorpay-accent);">${trace.recommended_action}</code> &bull; Hard Boundary Checks:
             </div>
             <div class="policy-checks-list">
               ${trace.policy_checks.map(c => `
@@ -271,11 +350,11 @@ function renderTrace(trace) {
         </div>
       </div>
 
-      <!-- Step 4: Outcome Banner -->
+      <!-- Step 4: Execution & Verification -->
       <div class="trace-step">
         <div class="step-num">4</div>
         <div class="step-body">
-          <div class="step-title">Execution &amp; Verification</div>
+          <div class="step-title">Stage 4 &bull; Execution &amp; Outcome Verification</div>
           <div class="outcome-banner ${bannerClass}">
             <div>
               <div class="outcome-text">${bannerTitle}</div>
@@ -284,6 +363,7 @@ function renderTrace(trace) {
             ${trace.amount_recovered > 0 ? `<div class="outcome-amount text-emerald">+&#8377;${trace.amount_recovered.toLocaleString('en-IN')}</div>` : ''}
             ${trace.gateway_fee_saved > 0 ? `<div class="outcome-amount text-cyan">+&#8377;${trace.gateway_fee_saved.toFixed(2)} Fee Saved</div>` : ''}
           </div>
+          ${explanationBoxHtml}
         </div>
       </div>
     </div>

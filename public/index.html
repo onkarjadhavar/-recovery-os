@@ -47,6 +47,13 @@
     </div>
   </header>
 
+  <!-- Demo Safety Notice Banner -->
+  <div class="demo-safety-banner">
+    <span>&#128737;&#65039;</span>
+    <span><strong>DEMO / TEST MODE EMULATOR</strong> &bull; Synthetic Payment Telemetry &bull; Safe Simulation: <strong>No Real Customer Money Moved</strong></span>
+    <span class="seed-badge">SEED: 20260904</span>
+  </div>
+
   <!-- Main Container -->
   <main class="main-container">
     <!-- Key Metric Ribbon -->
@@ -56,17 +63,17 @@
           <span class="metric-label">REVENUE AT RISK</span>
           <span class="metric-icon">&#9888;&#65039;</span>
         </div>
-        <div class="metric-value" id="statAtRisk">&#8377;2.18 Cr</div>
-        <div class="metric-subtext">Across held-out dataset</div>
+        <div class="metric-value" id="statAtRisk">&#8377;1.85 Cr</div>
+        <div class="metric-subtext">Across 5,000 held-out test records</div>
       </div>
 
       <div class="metric-card card-glow-success">
         <div class="metric-header">
-          <span class="metric-label">VERIFIED RECOVERED</span>
+          <span class="metric-label">SIMULATED RECOVERED REVENUE</span>
           <span class="metric-icon">&#128176;</span>
         </div>
-        <div class="metric-value text-emerald" id="statRecovered">&#8377;1.42 Cr</div>
-        <div class="metric-subtext"><span class="badge-lift" id="statRecRate">+65.2% rate</span> vs 32.1% baseline</div>
+        <div class="metric-value text-emerald" id="statRecovered">&#8377;73.5 Lakh</div>
+        <div class="metric-subtext"><span class="badge-lift" id="statRecRate">+39.8% rate</span> vs 22.4% baseline</div>
       </div>
 
       <div class="metric-card card-glow-warning">
@@ -74,17 +81,17 @@
           <span class="metric-label">HIGH-RISK ACTIONS BLOCKED</span>
           <span class="metric-icon">&#128737;&#65039;</span>
         </div>
-        <div class="metric-value text-amber" id="statRiskBlocked">100%</div>
-        <div class="metric-subtext">Zero fraudulent auto-retries permitted</div>
+        <div class="metric-value text-amber" id="statRiskBlocked">808</div>
+        <div class="metric-subtext">Zero fraudulent auto-retries permitted (100% safe)</div>
       </div>
 
       <div class="metric-card card-glow-purple">
         <div class="metric-header">
-          <span class="metric-label">GATEWAY FEES SAVED</span>
+          <span class="metric-label">ESTIMATED GATEWAY FEES SAVED</span>
           <span class="metric-icon">&#128736;&#65039;</span>
         </div>
-        <div class="metric-value text-cyan" id="statFeesSaved">&#8377;36,450</div>
-        <div class="metric-subtext">By halting futile permanent retries</div>
+        <div class="metric-value text-cyan" id="statFeesSaved">&#8377;2,026.50</div>
+        <div class="metric-subtext">By halting futile permanent failures (&#8377;3.50/txn)</div>
       </div>
     </section>
 
@@ -161,9 +168,12 @@
         <div class="panel-header">
           <div class="panel-title-group">
             <h2 class="panel-title">Held-Out Benchmark Evaluation</h2>
-            <p class="panel-subtitle">Scientific comparative test: Naive Retry vs RecoveryOS</p>
+            <p class="panel-subtitle">Dataset: 20,000 synthetic transactions | Final benchmark: 5,000 held-out test records</p>
           </div>
-          <div class="benchmark-tag">20,000 TXNS</div>
+          <div style="display: flex; gap: 0.5rem; align-items: center;">
+            <button id="openBenchmarkExplainerBtn" class="btn btn-sm btn-outline">Methodology &amp; Formulas</button>
+            <div class="benchmark-tag">5,000 HELD-OUT TXNS</div>
+          </div>
         </div>
 
         <div class="benchmark-table-wrapper">
@@ -179,40 +189,40 @@
             <tbody id="benchmarkTableBody">
               <!-- Dynamically populated by app.js -->
               <tr>
-                <td class="font-medium">Total Analyzed</td>
-                <td>20,000</td>
-                <td>20,000</td>
-                <td class="text-neutral">Held-out</td>
+                <td class="font-medium">Total Evaluated</td>
+                <td>5,000</td>
+                <td>5,000</td>
+                <td class="text-neutral">Held-out (Seed: 20260904)</td>
               </tr>
               <tr>
                 <td class="font-medium">Recovery Success Rate</td>
-                <td>32.4%</td>
-                <td class="text-emerald font-bold">66.8%</td>
-                <td class="text-emerald font-bold">+34.4% Lift</td>
+                <td>22.4%</td>
+                <td class="text-emerald font-bold">39.8%</td>
+                <td class="text-emerald font-bold">+17.4% Lift</td>
               </tr>
               <tr>
-                <td class="font-medium">Net Recovered Amount</td>
-                <td>&#8377;69.8 Lakh</td>
-                <td class="text-emerald font-bold">&#8377;1.44 Crore</td>
-                <td class="text-emerald font-bold">+&#8377;74.2 Lakh</td>
+                <td class="font-medium">Net Recovered Revenue</td>
+                <td>&#8377;41.3 Lakh</td>
+                <td class="text-emerald font-bold">&#8377;73.5 Lakh</td>
+                <td class="text-emerald font-bold">+&#8377;32.2 Lakh Lift</td>
               </tr>
               <tr>
                 <td class="font-medium">Unnecessary Actions Burned</td>
-                <td class="text-rose">13,520</td>
-                <td class="text-emerald">0</td>
+                <td class="text-rose">3,114</td>
+                <td class="text-emerald font-bold">0</td>
                 <td class="text-emerald font-bold">100% Eliminated</td>
               </tr>
               <tr>
                 <td class="font-medium">High-Risk Actions Taken</td>
-                <td class="text-rose font-bold">1,024</td>
-                <td class="text-emerald font-bold">0</td>
-                <td class="text-emerald font-bold">Safe Stopped</td>
+                <td class="text-rose font-bold">808</td>
+                <td class="text-emerald font-bold">0 (Quarantined)</td>
+                <td class="text-emerald font-bold">100% Gated</td>
               </tr>
               <tr>
-                <td class="font-medium">Wasted Gateway Fees Saved</td>
+                <td class="font-medium">Estimated Gateway Fees Saved</td>
                 <td>&#8377;0</td>
-                <td class="text-cyan font-bold">&#8377;36,450</td>
-                <td class="text-cyan font-bold">&#8377;36,450 saved</td>
+                <td class="text-cyan font-bold">&#8377;2,026.50</td>
+                <td class="text-cyan font-bold">&#8377;2,026.50 saved</td>
               </tr>
             </tbody>
           </table>
@@ -289,6 +299,86 @@
       </div>
     </div>
   </div>
+
+  <!-- Benchmark Explainer Modal -->
+  <div class="modal-overlay" id="benchmarkExplainerModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3 class="modal-title">Benchmark Methodology &amp; Mathematical Formulations</h3>
+        </div>
+        <button class="modal-close" id="closeBenchmarkModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-body explainer-content">
+        <h4>1. Dataset Partition &amp; Reproducibility</h4>
+        <p>A deterministic corpus of <strong>20,000 synthetic transactions</strong> was generated with fixed PRNG seed <code>20260904</code> across 6 realistic Indian merchant verticals (Lenskart, boAt, Swiggy, Zomato, Nykaa, Urban Company). Partition split:</p>
+        <ul>
+          <li><strong>70% Training / Calibration</strong> (14,000 transactions)</li>
+          <li><strong>15% Validation / Rule Tuning</strong> (3,000 transactions)</li>
+          <li><strong>15% Held-Out Test Set</strong> (5,000 transactions: <code>txns[-5000:]</code>)</li>
+        </ul>
+        <p>Both <em>Naive Retry Baseline</em> and <em>RecoveryOS</em> are evaluated simultaneously against the <strong>identical 5,000 held-out test records</strong> to guarantee mathematical fairness.</p>
+
+        <h4>2. Mathematical Metric Definitions</h4>
+        <ul>
+          <li><strong>Recovery Success Rate (%)</strong> = <code>(Successful Verified Recoveries / Total Evaluated Failures) &times; 100</code></li>
+          <li><strong>Net Recovered Revenue (&#8377;)</strong> = <code>&sum;(Recovered Transaction Amounts) &minus; Incurred Gateway Fees</code></li>
+          <li><strong>Unnecessary Actions Burned</strong> = Total automated retry attempts dispatched on permanent/unrecoverable failures.</li>
+          <li><strong>High-Risk Automated Actions</strong> = Retries erroneously executed on transactions with risk score &gt; 0.35.</li>
+          <li><strong>Estimated Gateway Fees Saved (&#8377;)</strong> = <code>(Permanent Halts + High-Risk Quarantines) &times; &#8377;3.50</code> (estimated gateway processing fee avoided per redundant attempt).</li>
+          <li><strong>Net Economic Lift (&#8377;)</strong> = <code>RecoveryOS Recovered &minus; Baseline Recovered + Gateway Fees Saved</code></li>
+        </ul>
+
+        <h4>3. Baseline Specification</h4>
+        <p><strong>Naive Retry:</strong> The status-quo industry approach of blindly retrying every failed transaction without failure categorization, risk checks, or customer CLV consideration. This causes high rate-limiting, wasted gateway processing fees, and severe chargeback risk.</p>
+
+        <h4>4. Verification Command</h4>
+        <p>To deterministically regenerate and verify the benchmark numbers locally:</p>
+        <pre style="background: var(--sky-50); padding: 0.75rem; border-radius: 4px; font-family: var(--font-mono); font-size: 0.75rem;">python backend/app/data/synthetic_generator.py
+python -m unittest discover backend/tests</pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture & Safety Spec Modal -->
+  <div class="modal-overlay" id="docsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3 class="modal-title">RecoveryOS Architecture &amp; Deterministic Safety Spec</h3>
+        </div>
+        <button class="modal-close" id="closeDocsModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-body explainer-content">
+        <h4>Core Philosophy: Separation of Powers</h4>
+        <p><strong>"AI decides what might recover revenue. Deterministic policy decides what is safe. Execution happens only when approved."</strong></p>
+        
+        <h4>The 6-Stage Execution Pipeline</h4>
+        <ol style="margin-left: 1.25rem; margin-bottom: 0.75rem;">
+          <li><strong>Event Ingestion:</strong> Ingests <code>payment.failed</code> webhook or checkout drop-off telemetry.</li>
+          <li><strong>AI Reasoning / Diagnosis:</strong> LLM/Classifier analyzes payment rail, failure code, customer CLV, and past decline patterns to produce an action recommendation and confidence score.</li>
+          <li><strong>Deterministic Policy Guardrails:</strong> Python rules engine rigorously validates all hard invariants. <em>The AI cannot override these rules.</em></li>
+          <li><strong>Execution (Only If Approved):</strong> Razorpay Smart Retry or Payment Link issued with exponential jitter.</li>
+          <li><strong>Outcome Verification:</strong> Verifies capture status, halts upon consecutive failures, and records payment lifecycle.</li>
+          <li><strong>Audit Trail:</strong> Emits immutable, reproducible decision records with full rule telemetry.</li>
+        </ol>
+
+        <h4>Hard Deterministic Invariants</h4>
+        <ul>
+          <li><code>MAX_AUTO_RECOVERY_AMOUNT</code>: Strictly &#8377;5,000.00. Transactions &gt; &#8377;5k automatically route to Human Review.</li>
+          <li><code>MAX_RETRY_ATTEMPTS</code>: Max 2 attempts. Prevents card network spam and fee burning.</li>
+          <li><code>MIN_AI_CONFIDENCE</code>: 85% confidence floor. Any diagnosis &lt; 0.85 requires human review.</li>
+          <li><code>FRAUD_RISK_BOUNDARY</code>: Risk score &gt; 0.35 is quarantined immediately.</li>
+          <li><code>PERMANENT_FAILURE_STOP</code>: Instruments with <code>CARD_EXPIRED</code>, invalid credentials, or fraud blocks halt execution immediately (<code>DO_NOTHING</code>).</li>
+          <li><code>WEBHOOK_IDEMPOTENCY</code>: In-memory/Redis signature hash table rejects replay attacks and duplicate event delivery.</li>
+          <li><code>ALREADY_CAPTURED_SAFETY</code>: Payments marked <code>captured</code> are immediately suppressed from recovery.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
 
   <footer class="app-footer">
     <div class="footer-content">

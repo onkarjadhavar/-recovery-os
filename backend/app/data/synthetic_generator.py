@@ -37,7 +37,7 @@ def generate_synthetic_transactions(count: int = 20000, output_path: str = None)
     """
     Generates realistic payment failure events with customer tenure, risk scores, and failure types.
     """
-    random.seed(42)  # Deterministic seed for scientific reproducibility
+    random.seed(20260904)  # Deterministic seed (2026-09-04) for scientific reproducibility and held-out evaluation
     transactions = []
     base_time = datetime(2026, 9, 1, 0, 0, 0)
 
