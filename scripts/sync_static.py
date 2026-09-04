@@ -40,5 +40,13 @@ def sync():
         shutil.copy2(app_path, os.path.join(frontend_dir, "app.js"))
         print("Updated frontend/ files")
 
+    # 4. Copy to backend/app/static/
+    static_dir = os.path.join(ROOT_DIR, "backend", "app", "static")
+    if os.path.exists(static_dir):
+        shutil.copy2(index_path, os.path.join(static_dir, "index.html"))
+        shutil.copy2(style_path, os.path.join(static_dir, "style.css"))
+        shutil.copy2(app_path, os.path.join(static_dir, "app.js"))
+        print("Updated backend/app/static/ files")
+
 if __name__ == "__main__":
     sync()
