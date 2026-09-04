@@ -1,0 +1,5 @@
+[tool.vercel]
+entrypoint = "app.py"
+
+[tool.vercel.fastapi.static]
+cdn = true

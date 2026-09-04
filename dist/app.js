@@ -110,7 +110,8 @@ const FALLBACK_SCENARIOS = {
 const PROD_BACKEND = "https://backend-two-chi-94.vercel.app";
 const API_BASE = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1")
   ? "http://127.0.0.1:8000"
-  : PROD_BACKEND;
+  : (window.location.origin && window.location.origin.includes("vercel.app") ? window.location.origin : PROD_BACKEND);
+
 
 // DOM Elements
 const liveTraceView = document.getElementById("liveTraceView");
