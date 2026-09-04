@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RecoveryOS — AI Revenue Recovery Decision Engine | Razorpay Buildathon 2026</title>
+  <meta name="description" content="Autonomous AI-powered recovery decision and policy engine for payment platforms. Bounded actions, stopping rules, and measured revenue recovery." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <script type="module" crossorigin src="./assets/index-Dce5NKol.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DZkbMpmT.css">
+</head>
+<body>
+  <!-- Top Navigation Bar -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-badge">
+        <div class="rzp-logo-glow"></div>
+        <svg class="rzp-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2">
+          <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span class="brand-title">Recovery<span class="brand-highlight">OS</span></span>
+      </div>
+      <div class="track-tag">
+        <span class="pulse-dot"></span>
+        <span>Track 3: AI Revenue Recovery</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <div class="system-status-chip">
+        <span class="status-indicator online"></span>
+        <span class="status-text">AGENT & POLICY ENGINE ACTIVE</span>
+      </div>
+      <div class="guardrail-chip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        <span>BOUNDED &le; &#8377;5,000</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <button id="runFullBenchmarkBtn" class="btn btn-outline">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/><polyline points="9 11 12 14 22 4"/></svg>
+        <span>Run Full 20k Benchmark</span>
+      </button>
+      <div class="mode-pill">TEST MODE EMULATOR</div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+    <!-- Key Metric Ribbon -->
+    <section class="metric-ribbon">
+      <div class="metric-card card-glow-primary">
+        <div class="metric-header">
+          <span class="metric-label">REVENUE AT RISK</span>
+          <span class="metric-icon">&#9888;&#65039;</span>
+        </div>
+        <div class="metric-value" id="statAtRisk">&#8377;2.18 Cr</div>
+        <div class="metric-subtext">Across held-out dataset</div>
+      </div>
+
+      <div class="metric-card card-glow-success">
+        <div class="metric-header">
+          <span class="metric-label">VERIFIED RECOVERED</span>
+          <span class="metric-icon">&#128176;</span>
+        </div>
+        <div class="metric-value text-emerald" id="statRecovered">&#8377;1.42 Cr</div>
+        <div class="metric-subtext"><span class="badge-lift" id="statRecRate">+65.2% rate</span> vs 32.1% baseline</div>
+      </div>
+
+      <div class="metric-card card-glow-warning">
+        <div class="metric-header">
+          <span class="metric-label">HIGH-RISK ACTIONS BLOCKED</span>
+          <span class="metric-icon">&#128737;&#65039;</span>
+        </div>
+        <div class="metric-value text-amber" id="statRiskBlocked">100%</div>
+        <div class="metric-subtext">Zero fraudulent auto-retries permitted</div>
+      </div>
+
+      <div class="metric-card card-glow-purple">
+        <div class="metric-header">
+          <span class="metric-label">GATEWAY FEES SAVED</span>
+          <span class="metric-icon">&#128736;&#65039;</span>
+        </div>
+        <div class="metric-value text-cyan" id="statFeesSaved">&#8377;36,450</div>
+        <div class="metric-subtext">By halting futile permanent retries</div>
+      </div>
+    </section>
+
+    <!-- Top Grid: Interactive Judge Console & Benchmark Table -->
+    <div class="dashboard-grid">
+      <!-- Left: Interactive Judge Simulator -->
+      <section class="panel console-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Interactive Evaluator Console</h2>
+            <p class="panel-subtitle">Select a scenario to trigger the autonomous detection &amp; policy loop in real time.</p>
+          </div>
+          <div class="live-pill">LIVE EXECUTION</div>
+        </div>
+
+        <!-- 4 Quick Presets for Demo -->
+        <div class="scenario-buttons-grid">
+          <button class="scenario-btn active" data-scenario="transient_upi">
+            <div class="sc-top">
+              <span class="sc-badge badge-green">Scenario 1 &bull; Instant Win</span>
+              <span class="sc-amount">&#8377;1,499</span>
+            </div>
+            <div class="sc-title">Transient UPI Timeout</div>
+            <div class="sc-desc">Loyal customer (CLV &#8377;15.4k). Bank switch delay &rarr; Jitter retry succeeds.</div>
+          </button>
+
+          <button class="scenario-btn" data-scenario="high_value_risk">
+            <div class="sc-top">
+              <span class="sc-badge badge-red">Scenario 2 &bull; Safeguard Block</span>
+              <span class="sc-amount">&#8377;42,000</span>
+            </div>
+            <div class="sc-title">High-Value Risk Breach</div>
+            <div class="sc-desc">Anomalous IP, 0 prior success, risk 0.78 &rarr; Gated for Human Review.</div>
+          </button>
+
+          <button class="scenario-btn" data-scenario="permanent_failure">
+            <div class="sc-top">
+              <span class="sc-badge badge-amber">Scenario 3 &bull; Cost Saver</span>
+              <span class="sc-amount">&#8377;890</span>
+            </div>
+            <div class="sc-title">Expired Instrument</div>
+            <div class="sc-desc">Card expired error &rarr; Immediate halt (saves merchant gateway fee).</div>
+          </button>
+
+          <button class="scenario-btn" data-scenario="cart_dropoff">
+            <div class="sc-top">
+              <span class="sc-badge badge-blue">Scenario 4 &bull; Smart Nudge</span>
+              <span class="sc-amount">&#8377;3,250</span>
+            </div>
+            <div class="sc-title">Checkout Cart Drop</div>
+            <div class="sc-desc">Warm intent abandoned at QR &rarr; Razorpay Smart Payment Link issued.</div>
+          </button>
+        </div>
+
+        <!-- Real-time Agent Decision Trace Window -->
+        <div class="trace-display-container">
+          <div class="trace-header">
+            <div class="trace-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="4 17 10 11 4 5"/><line x1="12" y1="19" x2="20" y2="19"/></svg>
+              <span>AI Decision &amp; Guardrail Trace</span>
+            </div>
+            <div class="trace-meta" id="traceTimestamp">Live Event</div>
+          </div>
+
+          <div class="trace-content" id="liveTraceView">
+            <!-- Dynamically populated by app.js -->
+            <div class="trace-loading">Simulating scenario...</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right: Benchmark & Defense Architecture -->
+      <section class="panel benchmark-panel">
+        <div class="panel-header">
+          <div class="panel-title-group">
+            <h2 class="panel-title">Held-Out Benchmark Evaluation</h2>
+            <p class="panel-subtitle">Scientific comparative test: Naive Retry vs RecoveryOS</p>
+          </div>
+          <div class="benchmark-tag">20,000 TXNS</div>
+        </div>
+
+        <div class="benchmark-table-wrapper">
+          <table class="benchmark-table">
+            <thead>
+              <tr>
+                <th>Evaluation Metric</th>
+                <th>Naive Retry</th>
+                <th>RecoveryOS</th>
+                <th>Impact</th>
+              </tr>
+            </thead>
+            <tbody id="benchmarkTableBody">
+              <!-- Dynamically populated by app.js -->
+              <tr>
+                <td class="font-medium">Total Analyzed</td>
+                <td>20,000</td>
+                <td>20,000</td>
+                <td class="text-neutral">Held-out</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Recovery Success Rate</td>
+                <td>32.4%</td>
+                <td class="text-emerald font-bold">66.8%</td>
+                <td class="text-emerald font-bold">+34.4% Lift</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Net Recovered Amount</td>
+                <td>&#8377;69.8 Lakh</td>
+                <td class="text-emerald font-bold">&#8377;1.44 Crore</td>
+                <td class="text-emerald font-bold">+&#8377;74.2 Lakh</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Unnecessary Actions Burned</td>
+                <td class="text-rose">13,520</td>
+                <td class="text-emerald">0</td>
+                <td class="text-emerald font-bold">100% Eliminated</td>
+              </tr>
+              <tr>
+                <td class="font-medium">High-Risk Actions Taken</td>
+                <td class="text-rose font-bold">1,024</td>
+                <td class="text-emerald font-bold">0</td>
+                <td class="text-emerald font-bold">Safe Stopped</td>
+              </tr>
+              <tr>
+                <td class="font-medium">Wasted Gateway Fees Saved</td>
+                <td>&#8377;0</td>
+                <td class="text-cyan font-bold">&#8377;36,450</td>
+                <td class="text-cyan font-bold">&#8377;36,450 saved</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="architecture-callout">
+          <div class="arch-title">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+            <span>Why RecoveryOS Wins for Razorpay:</span>
+          </div>
+          <p class="arch-desc">
+            Standard dunning blindly fires retries, causing merchant dispute fines and customer fatigue. RecoveryOS separates <strong>semantic diagnosis</strong> from <strong>deterministic financial policy</strong>—ensuring bounded actions, explicit stopping rules, and measurable economic uplift.
+          </p>
+        </div>
+      </section>
+    </div>
+
+    <!-- Bottom: Live Transaction Feed & Custom Event Tester -->
+    <section class="panel feed-panel">
+      <div class="panel-header flex-between">
+        <div class="panel-title-group">
+          <h2 class="panel-title">Transaction Event Feed &amp; Audit Log</h2>
+          <p class="panel-subtitle">Streaming real-time merchant events. Click any transaction to inspect the AI reasoning trace.</p>
+        </div>
+        <div class="feed-controls">
+          <select id="filterCodeSelect" class="select-filter">
+            <option value="">All Failure Types</option>
+            <option value="GATEWAY_TIMEOUT">GATEWAY_TIMEOUT</option>
+            <option value="INSUFFICIENT_FUNDS">INSUFFICIENT_FUNDS</option>
+            <option value="AUTHENTICATION_FAILED">AUTHENTICATION_FAILED</option>
+            <option value="CARD_EXPIRED">CARD_EXPIRED</option>
+            <option value="HIGH_RISK_SUSPECTED">HIGH_RISK_SUSPECTED</option>
+            <option value="CART_DROPOFF">CART_DROPOFF</option>
+          </select>
+          <button id="refreshFeedBtn" class="btn btn-sm btn-outline">Refresh</button>
+        </div>
+      </div>
+
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Txn ID</th>
+              <th>Merchant</th>
+              <th>Amount</th>
+              <th>Rail</th>
+              <th>Failure Code</th>
+              <th>Risk Score</th>
+              <th>Customer CLV</th>
+              <th>Action / Audit</th>
+            </tr>
+          </thead>
+          <tbody id="transactionTableBody">
+            <!-- Populated dynamically -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Full Decision Trace Modal -->
+  <div class="modal-overlay" id="traceModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <h3 class="modal-title">Comprehensive Decision &amp; Policy Audit Trail</h3>
+          <span class="modal-txn-id" id="modalTxnId">TXN_ID</span>
+        </div>
+        <button class="modal-close" id="closeModalBtn">&times;</button>
+      </div>
+
+      <div class="modal-body" id="modalTraceContent">
+        <!-- Injected dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="footer-content">
+      <span>Built for <strong>Razorpay AI Buildathon 2026</strong> &bull; Track 3: AI Revenue Recovery</span>
+      <span class="footer-links">
+        <a href="#docs" id="openDocsModalBtn">Architecture &amp; Safety Spec</a>
+        &bull;
+        <a href="/api/health" target="_blank">Health API</a>
+      </span>
+    </div>
+  </footer>
+
+</body>
+</html>
