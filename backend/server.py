@@ -8,7 +8,7 @@ import os
 import sys
 import json
 import urllib.parse
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from typing import Dict, Any
 
 # Add parent directory to path so imports work reliably
@@ -194,7 +194,7 @@ class RecoveryOSHandler(BaseHTTPRequestHandler):
 def run(port: int = 8000):
     init_data()
     server_address = ("127.0.0.1", port)
-    httpd = HTTPServer(server_address, RecoveryOSHandler)
+    httpd = ThreadingHTTPServer(server_address, RecoveryOSHandler)
     print(f"\n=======================================================")
     print(f"  RecoveryOS Server Running at http://127.0.0.1:{port}")
     print(f"  Dashboard available at: http://127.0.0.1:{port}/index.html")
